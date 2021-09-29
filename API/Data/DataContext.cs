@@ -10,21 +10,18 @@ namespace API.Data
         AppUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>,
         IdentityUserToken<int>>
     {
-         public DataContext(DbContextOptions options) : base(options)
+        public DataContext(DbContextOptions options) : base(options)
         {
         }
 
-        public DbSet<Address> Addresses  { get; set; }
         public DbSet<Category> Categories  { get; set; }
-        public DbSet<Feature> Features { get; set; }
-        public DbSet<DeliverymanSchedule> DeliverymanSchedules  { get; set; }
-        public DbSet<Message> Messages  { get; set; }
         public DbSet<Order> Orders  { get; set; }
-        public DbSet<OrderProduct> OrderProducts  { get; set; }
-        public DbSet<Product> Products  { get; set; }
-        public DbSet<ProductFeature> ProductFeatures   { get; set; }
-        public DbSet<ProductImg> ProductImgs   { get; set; }
-        public DbSet<RealProduct> RealProducts   { get; set; }
+
+        public DbSet<RealResearch> RealResearches { get; set; }
+        public DbSet<RealResearchIndicator> RealResearchIndicators { get; set; }
+
+        public DbSet<Research> Rearches { get; set; }
+        public DbSet<ResearchIndicator> ResearchIndicators { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -37,6 +34,18 @@ namespace API.Data
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
 
+            builder.Entity<AppUser>()
+                .HasMany(ur => ur.Orders)
+                .WithOne(u => u.Customer)
+                .HasForeignKey(ur => ur.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<AppUser>()
+                .HasMany(ur => ur.CompletedOrders)
+                .WithOne(u => u.LaboratoryAssistant)
+                .HasForeignKey(ur => ur.LaboratoryAssistantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<AppRole>()
                 .HasMany(ur => ur.UserRoles)
                 .WithOne(u => u.Role)
@@ -44,73 +53,38 @@ namespace API.Data
                 .IsRequired();
 
             builder.Entity<Category>()
-            .HasOne(c => c.ParentCategory)
-            .WithMany(c => c.ChildCategories)
-            .OnDelete(DeleteBehavior.ClientSetNull);
-
-            builder.Entity<Feature>()
-            .HasOne(f => f.Category)
-            .WithMany(c => c.Features)
-            .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<ProductFeature>()
-            .HasKey(k => new {k.ProductId, k.FeatureId});
-
-            builder.Entity<ProductFeature>()
-            .HasOne(pf => pf.Product)
-            .WithMany(p => p.ProductFeatures)
-            .HasForeignKey(s => s.ProductId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-
-            builder.Entity<OrderProduct>()
-            .HasKey(k => new {k.RealProductId, k.OrderId});
-
-            builder.Entity<OrderProduct>()
-            .HasOne(op => op.Order)
-            .WithMany(o => o.OrderProducts)
-            .HasForeignKey(s => s.OrderId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<OrderProduct>()
-            .HasOne(op => op.RealProduct)
-            .WithMany(rp => rp.OrderProducts)
-            .HasForeignKey(s => s.RealProductId)
-            .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(c => c.ParentCategory)
+                .WithMany(c => c.ChildCategories)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<Order>()
-            .HasOne(o => o.Deliveryman)
-            .WithMany(d => d.DeliverymanOrders)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasMany(ur => ur.OrderResearches)
+                .WithOne(u => u.Order)
+                .HasForeignKey(u => u.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Order>()
-            .HasOne(o => o.Customer)
-            .WithMany(c => c.Orders)
-            .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<RealResearch>()
+                .HasMany(p => p.RealResearchIndicators)
+                .WithOne(s => s.RealResearch)
+                .HasForeignKey(s => s.RealResearchId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Research>()
+                .HasMany(p => p.RealResearches)
+                .WithOne(s => s.Research)
+                .HasForeignKey(s => s.ResearchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Category>()
+                .HasMany(p => p.Researches)
+                .WithOne(s => s.Category)
+                .HasForeignKey(s => s.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Research>()
+                .HasMany(p => p.Indicators)
+                .WithMany(s => s.Researches);
             
-
-             builder.Entity<Message>()
-            .HasOne(u => u.Recipient)
-            .WithMany(m => m.MessagesReceived)
-            .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Message>()
-            .HasOne(u => u.Sender)
-            .WithMany(m => m.MessagesSent)
-            .OnDelete(DeleteBehavior.Restrict);
-
-
-            builder.Entity<DeliverymanSchedule>()
-            .HasOne(s => s.Deliveryman)
-            .WithMany(m => m.DeliverymanShedules)
-            .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<DeliverySchedule>()
-            .HasOne(s => s.Deliveryman)
-            .WithMany(m => m.DeliverySchedules)
-            .OnDelete(DeleteBehavior.Restrict);
-
             builder.ApplyUtcDateTimeConverter();
         }
     }

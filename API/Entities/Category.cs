@@ -8,8 +8,9 @@ namespace API.Entities
         public int? ParentCategoryId { get; set; }
         public Category ParentCategory { get; set; }
         public ICollection<Category> ChildCategories { get; set; }
-        public ICollection<Feature> Features { get; set; }
         public string Name { get; set; }
         public string ImgLink { get; set; }
+
+        public ICollection<Research> Researches { get; set; }
     }
 }
