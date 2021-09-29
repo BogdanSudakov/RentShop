@@ -27,49 +27,49 @@ namespace API.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpGet("detail/{id}")]
-        public async Task<ActionResult<OrderDto>> GetOrderById(int id)
-        {
-            var order = await _context.Orders
-                .Include(p => p.OrderProducts)
-                .ThenInclude(s => s.RealProduct)
-                .Where(c => c.Id == id)
-                .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+        // [HttpGet("detail/{id}")]
+        // public async Task<ActionResult<OrderDto>> GetOrderById(int id)
+        // {
+        //     var order = await _context.Orders
+        //         .Include(p => p.OrderProducts)
+        //         .ThenInclude(s => s.RealProduct)
+        //         .Where(c => c.Id == id)
+        //         .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
+        //         .ToListAsync();
 
-            if (order == null) return NotFound();
+        //     if (order == null) return NotFound();
 
-            return Ok(order);
-        }
+        //     return Ok(order);
+        // }
 
-        [HttpGet("list/{userid}")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUserId(int userid)
-        {
-            var orders = await _context.Orders
-                .Include(p => p.OrderProducts)
-                .ThenInclude(s => s.RealProduct)
-                .Where(c => c.CustomerId == userid)
-                .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+        // [HttpGet("list/{userid}")]
+        // public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUserId(int userid)
+        // {
+        //     var orders = await _context.Orders
+        //         .Include(p => p.OrderProducts)
+        //         .ThenInclude(s => s.RealProduct)
+        //         .Where(c => c.CustomerId == userid)
+        //         .ProjectTo<OrderDto>(_mapper.ConfigurationProvider)
+        //         .ToListAsync();
 
-            if (orders == null) return NotFound();
+        //     if (orders == null) return NotFound();
 
-            return Ok(orders);
-        }
+        //     return Ok(orders);
+        // }
 
-        [HttpPost("new")]
-        public async Task<ActionResult> AddOrder(Order order)
-        {
-            order.OrderDate = DateTime.UtcNow;
-            order.Status = "order in processing";
-            order.DeliverymanId = 1;
+        // [HttpPost("new")]
+        // public async Task<ActionResult> AddOrder(Order order)
+        // {
+        //     order.OrderDate = DateTime.UtcNow;
+        //     order.Status = "order in processing";
+        //     order.DeliverymanId = 1;
 
-            _dataContext.Orders.Add(order);
+        //     _dataContext.Orders.Add(order);
 
-            await _dataContext.SaveChangesAsync();
+        //     await _dataContext.SaveChangesAsync();
 
-            return Ok();
-        }
+        //     return Ok();
+        // }
 
         [HttpPut]
         public async Task<ActionResult> UpdateOrder(Order order)

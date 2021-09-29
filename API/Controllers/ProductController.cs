@@ -21,39 +21,39 @@ namespace API.Controllers
             _dataContext = dataContext;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory([FromQuery] GetCategoryPageDto categoryPageDto)
-        {
-            return await _dataContext.Products.Include(p => p.ProductImgs)
-                .Where(p => p.CategoryId == categoryPageDto.CategoryId)
-                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
+        // [HttpGet]
+        // public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory([FromQuery] GetCategoryPageDto categoryPageDto)
+        // {
+        //     return await _dataContext.Products.Include(p => p.ProductImgs)
+        //         .Where(p => p.CategoryId == categoryPageDto.CategoryId)
+        //         .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+        //         .ToListAsync();
+        // }
 
-        [HttpGet("detail/{id}")]
-        public async Task<ActionResult<DetailedProductDto>> GetById(int id)
-        {
-            var product = await _dataContext.Products.Include(p => p.ProductImgs)
-                .Include(p => p.ProductFeatures).ThenInclude(f => f.Feature)
-                .Include(p => p.RealProducts)
-                .Where(p => p.Id == id)
-                .ProjectTo<DetailedProductDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+        // [HttpGet("detail/{id}")]
+        // public async Task<ActionResult<DetailedProductDto>> GetById(int id)
+        // {
+        //     var product = await _dataContext.Products.Include(p => p.ProductImgs)
+        //         .Include(p => p.ProductFeatures).ThenInclude(f => f.Feature)
+        //         .Include(p => p.RealProducts)
+        //         .Where(p => p.Id == id)
+        //         .ProjectTo<DetailedProductDto>(_mapper.ConfigurationProvider)
+        //         .FirstOrDefaultAsync();
             
-            if(product == null) return NotFound();
+        //     if(product == null) return NotFound();
 
-            return Ok(product);
-        }
+        //     return Ok(product);
+        // }
 
-        [HttpGet("shedule/{id}")]
-        public async Task<ActionResult<RealProductSchedule>> GetRealProductShedule(int id)
-        {
-            //would test it later
-            return await _dataContext.RealProducts
-                .Where(p => p.Id == id)
-                .Include(rp => rp.OrderProducts).ThenInclude(op => op.Order)
-                .ProjectTo<RealProductSchedule>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
-        }
+        // [HttpGet("shedule/{id}")]
+        // public async Task<ActionResult<RealProductSchedule>> GetRealProductShedule(int id)
+        // {
+        //     //would test it later
+        //     return await _dataContext.RealProducts
+        //         .Where(p => p.Id == id)
+        //         .Include(rp => rp.OrderProducts).ThenInclude(op => op.Order)
+        //         .ProjectTo<RealProductSchedule>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+        // }
         
     }
 }

@@ -83,65 +83,65 @@ namespace API.Controllers
             return BadRequest("Failed to change password");
         }
 
-        [HttpGet("getAddresses/{email}")]
-        public async Task<ActionResult<IEnumerable<Address>>> GetUserAddresses(string email)
-        {
-           var user = await _context.Users
-                .SingleOrDefaultAsync(x => x.Email == email);
+        // [HttpGet("getAddresses/{email}")]
+        // public async Task<ActionResult<IEnumerable<Address>>> GetUserAddresses(string email)
+        // {
+        //    var user = await _context.Users
+        //         .SingleOrDefaultAsync(x => x.Email == email);
 
-            if(user==null) return BadRequest("User not found");
+        //     if(user==null) return BadRequest("User not found");
 
-           var addresses = await _context.Addresses
-                            .Where(i => i.AppUserId == user.Id)
-                            .ToListAsync();
+        //    var addresses = await _context.Addresses
+        //                     .Where(i => i.AppUserId == user.Id)
+        //                     .ToListAsync();
 
-           if(addresses?.Count == 0) return Ok("User hasn't added any addresses");
+        //    if(addresses?.Count == 0) return Ok("User hasn't added any addresses");
 
-           return Ok(addresses);
-        }
+        //    return Ok(addresses);
+        // }
 
-        [HttpPost("addAddress")]
-        public async Task<ActionResult<AddressDto>> AddAddress(AddressDto addressDto){
-            var email = User.GetEmail();
+        // [HttpPost("addAddress")]
+        // public async Task<ActionResult<AddressDto>> AddAddress(AddressDto addressDto){
+        //     var email = User.GetEmail();
         
-            var user = await _context.Users
-                .SingleOrDefaultAsync(x => x.Email == email);
+        //     var user = await _context.Users
+        //         .SingleOrDefaultAsync(x => x.Email == email);
             
-            if(user==null) return BadRequest("User not found");
+        //     if(user==null) return BadRequest("User not found");
 
-            var address = _mapper.Map<Address>(addressDto);
-            address.AppUserId = user.Id;
+        //     var address = _mapper.Map<Address>(addressDto);
+        //     address.AppUserId = user.Id;
 
-            if (await _accountService.AddressAlreadyExists(address)){
-                return BadRequest("Address already exists");
-            }
+        //     if (await _accountService.AddressAlreadyExists(address)){
+        //         return BadRequest("Address already exists");
+        //     }
 
-            if((await _accountService.AddAddressAsync(address)).Succeeded){
-                return Ok(address);
-            }
+        //     if((await _accountService.AddAddressAsync(address)).Succeeded){
+        //         return Ok(address);
+        //     }
 
-            return BadRequest("Failed to add address");
-        }
+        //     return BadRequest("Failed to add address");
+        // }
 
-        [HttpDelete("deleteAddress/{addressId}")]
-        public async Task<ActionResult<bool>> DeleteAddress(int addressId){
-            var email = User.GetEmail();
+        // [HttpDelete("deleteAddress/{addressId}")]
+        // public async Task<ActionResult<bool>> DeleteAddress(int addressId){
+        //     var email = User.GetEmail();
         
-            var user = await _context.Users
-                .SingleOrDefaultAsync(x => x.Email == email);
+        //     var user = await _context.Users
+        //         .SingleOrDefaultAsync(x => x.Email == email);
 
-            if(user == null) return BadRequest("User not found");
+        //     if(user == null) return BadRequest("User not found");
 
-            var address = await _context.Addresses.FindAsync(addressId);
+        //     var address = await _context.Addresses.FindAsync(addressId);
 
-            if (address == null) return BadRequest("Wrong id");
+        //     if (address == null) return BadRequest("Wrong id");
 
-            if((await _accountService.DeleteAddressAsync(address)).Succeeded){
-                return Ok();
-            }
+        //     if((await _accountService.DeleteAddressAsync(address)).Succeeded){
+        //         return Ok();
+        //     }
 
-            return BadRequest("Failed to delete address");
-        }
+        //     return BadRequest("Failed to delete address");
+        // }
 
 
         [HttpPost("login")]

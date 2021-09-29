@@ -17,8 +17,8 @@ namespace API.Data.Seed
         {
             var categories = await SeedEntities<Category>(dataContext, "CategorySeedData.json");
 
-            var features = await SeedEntities<Feature>(dataContext, "FeatureSeedData.json");
-            var products = await SeedEntities<Product>(dataContext, "ProductSeedData.json");
+            // var features = await SeedEntities<Feature>(dataContext, "FeatureSeedData.json");
+            // var products = await SeedEntities<Product>(dataContext, "ProductSeedData.json");
             var orders = await SeedEntities<Order>(dataContext, "OrdersSeedData.json");
         }
 
